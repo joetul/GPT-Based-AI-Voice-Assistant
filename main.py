@@ -42,6 +42,8 @@ def recognize_speech_from_mic():
                 print(f"Heard: {speech_text}")
                 if speech_text.lower().startswith("hello hi"):
                     print("Trigger detected! Entering conversation mode.")
+                    # Speaking the welcome message
+                    speak_text_google("Hello, please ask me your question.")
                     conversation_mode(source)
             except sr.UnknownValueError:
                 # Google Speech Recognition couldn't understand the audio
