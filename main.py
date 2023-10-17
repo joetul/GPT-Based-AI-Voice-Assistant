@@ -85,6 +85,12 @@ def main():
         if user_input:
             print(f"You said: {user_input}")
 
+            # If the user_input starts with 'hello hi'
+            if user_input.lower().startswith("hello hi"):
+                user_input = user_input[len("hello hi "):].strip()
+            else:
+                continue  # Go back to the start of the loop
+
             if user_input.lower() in ["goodbye", "stop"]:
                 speak_text_google("Goodbye!")
                 print("Goodbye!")
