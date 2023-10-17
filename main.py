@@ -29,10 +29,23 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "key.json"
 
 def recognize_speech_from_mic():
     with sr.Microphone() as source:
-        print("Say something...")
-        audio = recognizer.listen(source)
-        speech_text = recognizer.recognize_google(audio)
-        return speech_text
+        while True:
+            print("Listening for 'hello hi' trigger...")
+            audio = recognizer.listen(source, timeout=10, phrase_time_limit=5)  # Listen for short bursts
+            try:
+                # Attempt to recognize the audio
+                speech_text = recognizer.recognize_google(audio)
+                print(f"Heard: {speech_text}")
+                if speech_text.lower().startswith("hello hi"):
+                    print("Trigger detected! Please continue with your question.")
+                    # Now we listen for the actual question
+                    audio_question = recognizer.listen(source)
+                    question_text = recognizer.recognize_google(audio_question)
+                    return question_text[len("hello hi "):].strip()
+            except sr.UnknownValueError:
+                # If Google Speech Recognition couldn't understand the audio
+                pass
+
 
 
 def speak_text_google(text):
@@ -84,12 +97,6 @@ def main():
 
         if user_input:
             print(f"You said: {user_input}")
-
-            # If the user_input starts with 'hello hi'
-            if user_input.lower().startswith("hello hi"):
-                user_input = user_input[len("hello hi "):].strip()
-            else:
-                continue  # Go back to the start of the loop
 
             if user_input.lower() in ["goodbye", "stop"]:
                 speak_text_google("Goodbye!")
